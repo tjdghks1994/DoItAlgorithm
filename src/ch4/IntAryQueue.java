@@ -21,7 +21,7 @@ public class IntAryQueue {
         que = new int[capacity];
     }
     // 데이터 삽입
-    public void inqueue(int data) {
+    public void enqueue(int data) {
         if (num == max) {
             throw new OverflowIntQueueException();
         }
