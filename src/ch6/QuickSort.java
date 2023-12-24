@@ -1,7 +1,10 @@
 package ch6;
 
+import ch4.IntStack;
+
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.Stack;
 
 public class QuickSort { // 퀵 정렬
 
@@ -12,11 +15,17 @@ public class QuickSort { // 퀵 정렬
         a[idx2] = tmp;
     }
 
-    // 퀵 정렬
+    // 퀵 정렬 재귀버전
     static void quickSort(int[] a, int left, int right) {
         int pl = left;  // 왼쪽 포인터
         int pr = right; // 오른쪽 포인터
         int pivot = a[(pl + pr) / 2];   // 피벗
+
+        System.out.printf("a[%d]~a[%d] : {", left, right);
+        for (int i = left; i < right; i++) {
+            System.out.printf("%d , ", a[i]);
+        }
+        System.out.printf("%d}\n", a[right]);
 
         do {
             while (a[pl] < pivot) { // a[pl] 값이 pivot 보다 작으면 왼쪽 포인터를 1칸 오른쪽으로 이동
@@ -44,6 +53,41 @@ public class QuickSort { // 퀵 정렬
         }
     }
 
+    static void quickSortNoRecur(int[] a, int left, int right) {
+        Stack<Integer> lstack = new Stack<>();
+        Stack<Integer> rstack = new Stack<>();
+
+        lstack.push(left);
+        rstack.push(right);
+
+        while (!lstack.isEmpty()) {
+            int pl = left = lstack.pop();  // 왼쪽 포인터
+            int pr = right = rstack.pop();  // 오른쪽 포인터
+            int pivot = a[(left + right) / 2];  // 피벗 값
+
+            do {
+                while (a[pl] < pivot) {
+                    pl++;
+                }
+                while (a[pr] > pivot) {
+                    pr--;
+                }
+                if (pl <= pr) {
+                    swap(a, pl++, pr--);
+                }
+            } while (pl <= pr);
+
+            if (left < pr) {
+                lstack.push(left);
+                rstack.push(pr);
+            }
+            if (pl < right) {
+                lstack.push(pl);
+                rstack.push(right);
+            }
+        }
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
@@ -51,15 +95,25 @@ public class QuickSort { // 퀵 정렬
         System.out.print("요솟수 = ");
         int num = scanner.nextInt();
         int[] x = new int[num];
+        int[] y = new int[num];
 
         for (int i = 0; i < x.length; i++) {
             System.out.print("x[" + i + "] = ");
-            x[i] = scanner.nextInt();
+            int number = scanner.nextInt();
+            x[i] = number;
+            y[i] = number;
         }
 
-        quickSort(x, 0, x.length - 1);  // 배열 x를 퀵 정렬
+        System.out.println("정렬 전 배열");
+        System.out.println(Arrays.toString(x));
+        System.out.println(Arrays.toString(y));
+
+        quickSort(x, 0, x.length - 1);  // 배열 x를 퀵 정렬(재귀)
+        quickSortNoRecur(y, 0, y.length - 1);  // 배열 y를 퀵 정렬(비재귀)
 
         System.out.println("오름차순으로 퀵 정렬을 완료했습니다.");
         System.out.println(Arrays.toString(x));
+        System.out.println(Arrays.toString(y));
+
     }
 }
